@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="IdermaClinica.Pages.PedidosPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:IdermaClinica.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:IdermaClinica.Models"
+    mc:Ignorable="d">
+
+    <Grid Padding="20,8,20,10" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Spacing="0">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Pedidos" />
+                <TextBlock
+                    x:Name="ResumenListaTexto"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="8">
+                <Button
+                    Click="ActualizarInventario_Click"
+                    Content="Actualizar" />
+                <Button
+                    Click="CargarNuevaLista_Click"
+                    Content="Nueva lista" />
+            </StackPanel>
+        </Grid>
+
+        <InfoBar
+            x:Name="AvisoCatalogo"
+            Grid.Row="1"
+            Title="Sin inventario"
+            IsClosable="False"
+            IsOpen="False"
+            Message="La clínica solo lee la colección de inventario en Firebase."
+            Severity="Informational" />
+
+        <InfoBar
+            x:Name="AvisoPedido"
+            Grid.Row="2"
+            IsOpen="False"
+            Severity="Warning" />
+
+        <Border Grid.Row="3" Style="{StaticResource CardBorderStyle}">
+            <StackPanel Spacing="6">
+                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="Buscar en inventario" />
+                <Grid Padding="8,0,8,2" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="Código" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource CaptionTextBlockStyle}" Text="Área" />
+                    <TextBlock Grid.Column="2" Style="{StaticResource CaptionTextBlockStyle}" Text="Producto" />
+                    <TextBlock Grid.Column="3" Style="{StaticResource CaptionTextBlockStyle}" Text="Cantidad" />
+                </Grid>
+                <AutoSuggestBox
+                    x:Name="BuscadorProductos"
+                    PlaceholderText="Código, área o producto"
+                    QueryIcon="Find"
+                    QuerySubmitted="Buscador_QuerySubmitted"
+                    SuggestionChosen="Buscador_SuggestionChosen"
+                    TextChanged="Buscador_TextChanged"
+                    UpdateTextOnSelect="False">
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Producto">
+                            <Grid
+                                MinWidth="560"
+                                Padding="6,4"
+                                Background="{x:Bind FondoInventario, Mode=OneWay}"
+                                ColumnSpacing="8"
+                                CornerRadius="{ThemeResource ControlCornerRadius}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Codigo}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Area}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Nombre}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind CantidadTexto, Mode=OneWay}" />
+                            </Grid>
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                </AutoSuggestBox>
+                <TextBlock
+                    x:Name="MensajeBusqueda"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="4" Padding="12,10" Style="{StaticResource CardBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Padding="4,0,4,6" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="110" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="36" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource ColumnHeaderTextStyle}" Text="Código" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource ColumnHeaderTextStyle}" Text="Área" />
+                    <TextBlock Grid.Column="2" Style="{StaticResource ColumnHeaderTextStyle}" Text="Producto" />
+                    <TextBlock Grid.Column="3" Style="{StaticResource ColumnHeaderTextStyle}" Text="Disp." />
+                    <TextBlock Grid.Column="4" Style="{StaticResource ColumnHeaderTextStyle}" Text="Cantidad" />
+                </Grid>
+
+                <ListView
+                    x:Name="ListaPedido"
+                    Grid.Row="1"
+                    IsItemClickEnabled="False"
+                    SelectionMode="None">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource QuietListViewItemStyle}">
+                            <Setter Property="Margin" Value="0,0,0,4" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:PedidoItem">
+                            <Grid
+                                Padding="4,2"
+                                Background="{x:Bind FondoInventario, Mode=OneWay}"
+                                ColumnSpacing="8"
+                                CornerRadius="{ThemeResource ControlCornerRadius}"
+                                VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="36" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Codigo}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind Area}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Nombre}"
+                                    TextWrapping="NoWrap"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind StockTexto, Mode=OneWay}" />
+                                <NumberBox
+                                    Grid.Column="4"
+                                    MinWidth="110"
+                                    Maximum="99999"
+                                    Minimum="1"
+                                    SmallChange="1"
+                                    SpinButtonPlacementMode="Compact"
+                                    Value="{x:Bind Cantidad, Mode=OneWay}"
+                                    ValueChanged="Cantidad_ValueChanged" />
+                                <Button
+                                    Grid.Column="5"
+                                    Width="32"
+                                    Height="32"
+                                    Padding="0"
+                                    Click="Quitar_Click"
+                                    ToolTipService.ToolTip="Quitar">
+                                    <FontIcon FontSize="12" Glyph="&#xE74D;" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <TextBlock
+                    x:Name="EstadoVacio"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="Busca un producto para agregarlo." />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="5" Padding="12,8" Style="{StaticResource CardBorderStyle}">
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    x:Name="ComboEnfermeras"
+                    MinWidth="200"
+                    VerticalAlignment="Center"
+                    DisplayMemberPath="Nombre"
+                    PlaceholderText="Enfermera" />
+                <Button
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Click="AgregarEnfermera_Click"
+                    Content="Agregar" />
+                <Button
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Click="EditarEnfermera_Click"
+                    Content="Editar" />
+                <CheckBox
+                    x:Name="CheckUrgente"
+                    Grid.Column="3"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Content="Urgente"
+                    ToolTipService.ToolTip="Solo para casos extremos" />
+                <StackPanel
+                    Grid.Column="4"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <TextBlock
+                        x:Name="ResumenPiezasTexto"
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Total" />
+                    <TextBlock
+                        x:Name="TotalTexto"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource BodyStrongTextBlockStyle}" />
+                </StackPanel>
+                <Button
+                    Grid.Column="5"
+                    VerticalAlignment="Center"
+                    Click="ProcesarPedido_Click"
+                    Content="Procesar"
+                    Style="{StaticResource AccentButtonStyle}" />
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

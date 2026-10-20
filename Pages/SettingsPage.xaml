@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="IdermaClinica.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:IdermaClinica.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:IdermaClinica.Models"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="20,8,20,12" Spacing="10">
+            <StackPanel Spacing="2">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Configuración" />
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="El inventario se actualiza en vivo desde Firebase. Actualizar vuelve a leerlo si hace falta." />
+            </StackPanel>
+
+            <InfoBar
+                x:Name="AvisoImportacion"
+                IsOpen="False"
+                Severity="Success" />
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="Catálogo" />
+                    <TextBlock
+                        x:Name="ResumenCatalogoTexto"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Button Click="ActualizarFirebase_Click" Content="Actualizar inventario" Style="{StaticResource AccentButtonStyle}" />
+                        <Button Click="ImportarExcel_Click" Content="Importar Excel" />
+                        <Button Click="DescargarPlantilla_Click" Content="Descargar plantilla" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        TextWrapping="Wrap"
+                        Text="Solo se consulta la colección inventario. Cada fila muestra código, área, producto y cantidad." />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="Historial de pedidos" />
+                    <TextBlock
+                        x:Name="ResumenHistorialTexto"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Button Click="ExportarHistorial_Click" Content="Exportar historial" />
+                        <Button Click="ImportarHistorial_Click" Content="Importar historial" />
+                    </StackPanel>
+                    <TextBlock
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        TextWrapping="Wrap"
+                        Text="Guarda o restaura los pedidos procesados en un archivo JSON. Importar puede reemplazar el historial o combinarlo." />
+                </StackPanel>
+            </Border>
+
+            <Border Padding="12,10" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                        Text="Productos importados" />
+                    <StackPanel x:Name="PanelCatalogo" Grid.Row="1" Spacing="4">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="72" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource ColumnHeaderTextStyle}" Text="Código" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource ColumnHeaderTextStyle}" Text="Área" />
+                            <TextBlock Grid.Column="2" Style="{StaticResource ColumnHeaderTextStyle}" Text="Producto" />
+                            <TextBlock Grid.Column="3" Style="{StaticResource ColumnHeaderTextStyle}" Text="Stock" />
+                        </Grid>
+                        <ListView
+                            x:Name="ListaCatalogo"
+                            MaxHeight="380"
+                            SelectionMode="None">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource QuietListViewItemStyle}">
+                                    <Setter Property="Margin" Value="0,0,0,4" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Producto">
+                                    <Grid
+                                        Padding="6,4"
+                                        Background="{x:Bind FondoInventario, Mode=OneWay}"
+                                        ColumnSpacing="8"
+                                        CornerRadius="{ThemeResource ControlCornerRadius}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="72" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Codigo}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind Area}" />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            VerticalAlignment="Center"
+                                            Text="{x:Bind Nombre}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Grid.Column="3"
+                                            VerticalAlignment="Center"
+                                            Text="{x:Bind CantidadTexto, Mode=OneWay}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                    <TextBlock
+                        x:Name="CatalogoVacioTexto"
+                        Grid.Row="1"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="Aún no hay productos en la colección de inventario."
+                        Visibility="Collapsed" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

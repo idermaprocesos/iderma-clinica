@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+installer/payload/
+installer/bin/
+installer/obj/
+**/publish/
+msix/
+.DS_Store
